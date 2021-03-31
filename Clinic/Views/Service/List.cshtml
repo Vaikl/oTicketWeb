@@ -1,0 +1,8 @@
+﻿@model ServicesListViewModel
+
+<div class="row marginTop">
+    @foreach (var service in Model.Services)
+    {
+        @Html.Partial("ServicesSummary", service)
+    }
+</div>

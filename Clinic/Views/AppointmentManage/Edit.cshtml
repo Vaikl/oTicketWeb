@@ -1,0 +1,21 @@
+﻿@model Appointment
+@{
+    ViewBag.Title = "Редактировать заявку";
+    Layout = "_Layout";
+}
+
+<h3>Редактирование заявки</h3>
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="AppointmentId" />
+
+    <div class="form-group">
+        <label asp-for="DiagnosisId">Диагноз</label>
+        <div><span asp-validation-for="DiagnosisId" class="text-danger"></span></div>
+        <input asp-for="DiagnosisId" class="form-control" />
+    </div>
+
+    <div class="text-center">
+        <button class="btn btn-primary" type="submit">Сохранить</button>
+        <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+    </div>
+</form>

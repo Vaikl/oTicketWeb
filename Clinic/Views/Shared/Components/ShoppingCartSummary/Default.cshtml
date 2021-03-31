@@ -1,0 +1,17 @@
+﻿@model ShoppingCartViewModel
+
+@using Microsoft.AspNetCore.Identity
+@using Clinic.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <li>
+        <a asp-controller="ShoppingCart">
+            <span class="glyphicon glyphicon-shopping-cart"></span>
+            <span id="cart-status">
+                Корзина: @Model.ShoppingCart.ShoppingCartItems.Count
+            </span>
+        </a>
+    </li>
+}

@@ -1,0 +1,69 @@
+﻿@model Service
+@{
+    ViewBag.Title = "Редактировать услугу";
+    Layout = "_Layout";
+}
+
+<h3>Редактирование услуги</h3>
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="ServiceId" />
+
+    <div class="form-group">
+        <label asp-for="Name">Имя</label>
+        <div><span asp-validation-for="Name" class="text-danger"></span></div>
+        <input asp-for="Name" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CategoryId">Категория</label>
+        <div><span asp-validation-for="CategoryId" class="text-danger"></span></div>
+        <input asp-for="CategoryId" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="DoctorId">Врач (ID)</label>
+        <div><span asp-validation-for="DoctorId" class="text-danger"></span></div>
+        <input asp-for="DoctorId" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ShortDescription">Краткое описание</label>
+        <div><span asp-validation-for="ShortDescription" class="text-danger"></span></div>
+        <input asp-for="ShortDescription" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="LongDescription">Полное описание</label>
+        <div><span asp-validation-for="LongDescription" class="text-danger"></span></div>
+        <input asp-for="LongDescription" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Price">Цена</label>
+        <div><span asp-validation-for="Price" class="text-danger"></span></div>
+        <input asp-for="Price" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ImageUrl">Ссылка на картинку</label>
+        <div><span asp-validation-for="ImageUrl" class="text-danger"></span></div>
+        <input asp-for="ImageUrl" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ImageThumbnailUrl">Ссылка на превью картинки</label>
+        <div><span asp-validation-for="ImageThumbnailUrl" class="text-danger"></span></div>
+        <input asp-for="ImageThumbnailUrl" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IsPrefferedService">Отображать на главной</label>
+        <div><span asp-validation-for="IsPrefferedService" class="text-danger"></span></div>
+        <input asp-for="IsPrefferedService" class="form-check-label" />
+    </div>
+
+    <div class="text-center">
+        <button class="btn btn-primary" type="submit">Сохранить</button>
+        <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+    </div>
+</form>

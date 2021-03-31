@@ -1,0 +1,41 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Clinic.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <form asp-area="" asp-controller="Account" asp-action="Logout" id="logoutForm" method="post" class="navbar-right">
+        <ul class="nav navbar-nav navbar-right">
+            @if (User.IsInRole("Patient"))
+            {
+                <li><a id="myAppointmentsLink" asp-controller="AppointmentManage" asp-action="MyAppointments"> Мои заявки </a></li>              
+            }
+            @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
+            {
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown">Управление <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a id="adminLink" asp-controller="Admin" asp-action="Index"> Услуги </a></li>
+                        <li><a id="prescriptionLink" asp-controller="Prescription" asp-action="Index"> Рецепты </a></li>
+                        <li><a id="appointmentLink" asp-controller="AppointmentManage" asp-action="Index"> Заявки </a></li>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li><a id="rolesLink" asp-controller="Roles" asp-action="Index"> Роли </a></li>
+                            <li><a id="usersLink" asp-controller="Users" asp-action="Index"> Пользователи </a></li>
+                            <li><a id="diagnosisLink" asp-controller="Diagnosis" asp-action="Index"> Диагнозы </a></li>
+                        }
+                    </ul>
+                </li>
+            }
+            <li><a href="javascript:document.getElementById('logoutForm').submit()"> Выйти из @User.Identity.Name </a></li>
+        </ul>
+    </form>
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li><a id="registerLink" asp-controller="Account" asp-action="Register"> Регистрация </a></li>
+        <li><a id="loginLink" asp-controller="Account" asp-action="Login"> Вход </a></li>
+    </ul>
+}
