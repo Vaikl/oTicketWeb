@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 
 namespace Clinic.Repositories
 {
@@ -31,11 +32,10 @@ namespace Clinic.Repositories
         public Service GetServiceById(int serviceId) => _applicationDbContext.Services.FirstOrDefault(d => d.ServiceId == serviceId);
 
         public void SaveService(Service service)
-        {
-            if (service != null && service.ServiceId == 0)
+        { 
+           if (service != null && service.ServiceId == 0)
             {
-                service.DoctorName = _applicationIdentityDbContext.Users
-                        .FirstOrDefault(d => d.Id == service.DoctorId).UserName;
+               
                 _applicationDbContext.Services.Add(service);
             }
             else
@@ -49,8 +49,7 @@ namespace Clinic.Repositories
                     dbEntry.LongDescription = service.LongDescription;
                     dbEntry.Price = service.Price;
                     dbEntry.DoctorId = service.DoctorId;
-                    dbEntry.DoctorName = _applicationIdentityDbContext.Users
-                        .FirstOrDefault(d => d.Id == service.DoctorId).UserName;
+                    dbEntry.DoctorName = service.DoctorName;
                     dbEntry.ImageUrl = service.ImageUrl;
                     dbEntry.ImageThumbnailUrl = service.ImageThumbnailUrl;
                     dbEntry.IsPrefferedService = service.IsPrefferedService;

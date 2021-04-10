@@ -1,5 +1,6 @@
 ﻿using Clinic.Models;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace Clinic.Interfaces
 {
