@@ -62,7 +62,9 @@ namespace Clinic
 
             // подключаем URL Rewriting
             var options = new RewriteOptions()
-                    .AddRewrite("ShoppingCart/List", "ShoppingCart", skipRemainingRules: false);
+                    .AddRewrite("ShoppingCart/List", "ShoppingCart", skipRemainingRules: false)
+                    .AddRewrite("ShoppingCart/Checkout", "ShoppingCart", skipRemainingRules: false)
+                    .AddRewrite("ShoppingCart/CheckoutComplete", "ShoppingCart", skipRemainingRules: false);
             app.UseRewriter(options);
 
             app.UseStatusCodePages();
