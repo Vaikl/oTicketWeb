@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -58,6 +59,12 @@ namespace Clinic
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseDeveloperExceptionPage();
+
+            // подключаем URL Rewriting
+            var options = new RewriteOptions()
+                    .AddRewrite("ShoppingCart/List", "ShoppingCart", skipRemainingRules: false);
+            app.UseRewriter(options);
+
             app.UseStatusCodePages();
             app.UseSession();
 
@@ -78,6 +85,9 @@ namespace Clinic
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{Id?}");
             });
+
+
+          
         }
     }
 }

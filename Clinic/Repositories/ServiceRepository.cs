@@ -27,6 +27,8 @@ namespace Clinic.Repositories
 
         public IEnumerable<Service> GetAllServices() => Services.OrderBy(p => p.Name).ToList();
 
+        public IEnumerable<Service> GetAllServices(string idDoctor) => Services.OrderBy(p => p.Name).Where(v => v.DoctorId == idDoctor).ToList();
+
         public IEnumerable<Service> PrefferedServices => _applicationDbContext.Services.Where(p => p.IsPrefferedService).Include(c => c.Category);
 
         public Service GetServiceById(int serviceId) => _applicationDbContext.Services.FirstOrDefault(d => d.ServiceId == serviceId);

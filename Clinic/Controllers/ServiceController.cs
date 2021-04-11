@@ -37,7 +37,8 @@ namespace Clinic.Controllers
                 }
                 else
                 {
-                    services = _serviceRepository.Services.Where(p => p.CategoryId == 2).OrderBy(p => p.Name);
+                    int categoryId = _categoryRepository.Categories.Where(x => x.Name.Equals(category)).First().CategoryId;
+                    services = _serviceRepository.Services.Where(p => p.CategoryId == categoryId).OrderBy(p => p.Name);
                 }
 
                 currentCategory = _category;

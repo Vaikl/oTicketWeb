@@ -16,5 +16,7 @@ namespace Clinic.Interfaces
         Service DeleteService(int serviceId);
 
         Service GetServiceById(int serviceId);
+
+        IEnumerable<Service> GetAllServices(string idDoctor);
     }
 }

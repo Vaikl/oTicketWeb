@@ -1,4 +1,5 @@
-﻿using Clinic.Identity;
+﻿using Clinic.Database;
+using Clinic.Identity;
 using Clinic.Interfaces;
 using Clinic.Models;
 using log4net;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -18,19 +20,55 @@ namespace Clinic.Controllers
     {
         private IServiceRepository repository;
         private UserManager<ApplicationUser> _userManager;
+        private ApplicationDbContext _applicationDbContext;
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public AdminController(IServiceRepository repo, UserManager<ApplicationUser> userManager)
+        public AdminController(IServiceRepository repo, UserManager<ApplicationUser> userManager, ApplicationDbContext applicationDbContext)
         {
             repository = repo;
             _userManager = userManager;
+            _applicationDbContext = applicationDbContext;
         }
 
         [Authorize(Roles = "Admin, Doctor")]
-        public ViewResult Index() => View(repository.Services);
+        public ViewResult Index()
+        {
+            ClaimsPrincipal user = this.User;
+            string idDoctor = user.Claims.Where(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Select(c => c.Value).SingleOrDefault();
+            string[] roles = user.Claims.Where(c => c.Type == System.Security.Claims.ClaimTypes.Role).Select(c => c.Value).ToArray();
+            if (roles.Contains("Admin"))
+            {
+                 return View(repository.Services);
+            }
+            else
+            {
+                IEnumerable<Service> services = repository.GetAllServices(idDoctor);
+                return View(services);
+            }
+        }
 
         [Authorize(Roles = "Admin, Doctor")]
-        public ViewResult Edit(int serviceId) => View(repository.Services.FirstOrDefault(p => p.ServiceId == serviceId));
+        public ViewResult Edit(int serviceId)
+        {
+            List<Object> doctors = new List<Object>();
+            List<Object> categorys = new List<Object>();
+            foreach (ApplicationUser us in _userManager.Users)
+            {
+                List<string> roles = (List<string>)Task.Run(() => _userManager.GetRolesAsync(us)).Result;
+                if (roles.Contains("Doctor"))
+                {
+                    doctors.Add(new { Id = us.Id, UserName = us.FirstName + " " + us.LastName });
+                }
+            }
+
+            foreach (Category ca in _applicationDbContext.Categories)
+            {
+                categorys.Add(new { Id = ca.CategoryId, Name = ca.Name });
+            }
+            ViewBag.Categorys = new SelectList(categorys, "Id", "Name");
+            ViewBag.Doctors = new SelectList(doctors, "Id", "UserName");
+            return View(repository.Services.FirstOrDefault(p => p.ServiceId == serviceId));
+        }
 
         [Authorize(Roles = "Admin, Doctor")]
         [HttpPost]
@@ -38,9 +76,8 @@ namespace Clinic.Controllers
         {
             ClaimsPrincipal user = this.User;
             string idDoctor = user.Claims.Where(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Select(c => c.Value).SingleOrDefault();
-            string nameDoctor = user.Identity.Name;
             string[] roles = user.Claims.Where(c => c.Type == System.Security.Claims.ClaimTypes.Role).Select(c => c.Value).ToArray();
-            service.DoctorName = nameDoctor;
+         
             foreach (var error in ModelState)
             {
                 if(error.Key.Equals("DoctorId")){
@@ -51,12 +88,18 @@ namespace Clinic.Controllers
             if (!roles.Contains("Admin"))
             {
                 service.DoctorId = idDoctor;
+                ApplicationUser applicationUser = _userManager.Users.Where(x => x.Id == service.DoctorId).FirstOrDefault();
+                service.DoctorName = applicationUser.FirstName + " " + applicationUser.LastName;
             }
             else
             {
+           
                 service.DoctorId =Request.Form["ddlist"].ToString();
-                service.DoctorName = _userManager.Users.Where(x => x.Id == service.DoctorId).FirstOrDefault().UserName;
+                ApplicationUser applicationUser = _userManager.Users.Where(x => x.Id == service.DoctorId).FirstOrDefault();
+                service.DoctorName = applicationUser.FirstName + " " + applicationUser.LastName;
             }
+           
+           service.CategoryId = Int32.Parse(Request.Form["calist"].ToString());     
             if (ModelState.IsValid)
             {  
                 
@@ -74,16 +117,23 @@ namespace Clinic.Controllers
         [Authorize(Roles = "Admin, Doctor")]
         public ViewResult Create()
         {
-            List<ApplicationUser> list = new List<ApplicationUser>();
+            List<Object> doctors = new List<Object>();
+            List<Object> categorys = new List<Object>();
             foreach (ApplicationUser us in _userManager.Users)
             {
                 List<string> roles = (List<string>)Task.Run(() => _userManager.GetRolesAsync(us)).Result;
                 if (roles.Contains("Doctor"))
                 {
-                    list.Add(us);
+                    doctors.Add(new {Id = us.Id, UserName=us.FirstName+ " "+us.LastName });
                 }
+            } 
+
+            foreach (Category ca in _applicationDbContext.Categories)
+            {
+                categorys.Add(new {Id = ca.CategoryId, Name = ca.Name });
             }
-            ViewBag.Doctors = new SelectList(list, "Id", "UserName");        
+            ViewBag.Categorys = new SelectList(categorys, "Id", "Name");
+            ViewBag.Doctors = new SelectList(doctors, "Id", "UserName");        
             return  View("Edit", new Service());
         }
 
@@ -91,7 +141,13 @@ namespace Clinic.Controllers
         [HttpPost]
         public IActionResult Delete(int serviceId)
         {
+            List<ShoppingCartItem> shoppingCartItems = _applicationDbContext.ShoppingCartItems.Where(x => x.Service.ServiceId == serviceId).ToList();
+            foreach (ShoppingCartItem shoppingCart in shoppingCartItems)
+            {
+                _applicationDbContext.ShoppingCartItems.Remove(shoppingCart);
+            }
             Service deletedService = repository.DeleteService(serviceId);
+         
             log.Info($"Диагноз {deletedService} удален.");
             if (deletedService != null)
             {
