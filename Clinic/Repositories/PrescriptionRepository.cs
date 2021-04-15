@@ -9,7 +9,6 @@ namespace Clinic.Repositories
     public class PrescriptionRepository : IPrescriptionRepository
     {
         private readonly ApplicationDbContext _applicationDbContext;
-
         public PrescriptionRepository(ApplicationDbContext applicationDbContext)
         {
             _applicationDbContext = applicationDbContext;

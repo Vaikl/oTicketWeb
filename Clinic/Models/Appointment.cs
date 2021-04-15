@@ -14,8 +14,10 @@ namespace Clinic.Models
         public List<AppointmentLine> AppointmentLines { get; set; }
 
         public string PatientId { get; set; }
+        public string PatientFullName { get; set; }
         public string DoctorId { get; set; }
         public int DiagnosisId { get; set; }
+        public string DiagnosName { get; set; }
 
         [BindNever]
         [ScaffoldColumn(false)]
