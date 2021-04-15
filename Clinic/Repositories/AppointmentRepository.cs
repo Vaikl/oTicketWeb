@@ -1,7 +1,9 @@
 ﻿using Clinic.Database;
+using Clinic.Identity;
 using Clinic.Interfaces;
 using Clinic.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,15 +16,18 @@ namespace Clinic.Repositories
         private readonly ApplicationDbContext applicationDbContext;
         private readonly ShoppingCart _shoppingCart;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private UserManager<ApplicationUser> _userManager;
 
         public AppointmentRepository(
             ApplicationDbContext applicationDbContext,
             ShoppingCart shoppingCart,
-            IHttpContextAccessor httpContextAccessor)
+            UserManager<ApplicationUser> userManager,
+        IHttpContextAccessor httpContextAccessor)
         {
             this.applicationDbContext = applicationDbContext;
             _shoppingCart = shoppingCart;
             _httpContextAccessor = httpContextAccessor;
+            _userManager = userManager;
         }
 
         public IEnumerable<Appointment> Appointments => applicationDbContext.Appointments.ToList();
@@ -47,8 +52,10 @@ namespace Clinic.Repositories
                 appointment.AppointmentPlaced = DateTime.Now;
                 appointment.TotalSum = appointmentTotalSum;
                 appointment.PatientId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                appointment.DiagnosisId = 1;
-
+                appointment.DiagnosisId = 3;
+                ApplicationUser user = _userManager.Users.Where(x => x.Id == appointment.PatientId).First();
+                appointment.PatientFullName = user.FirstName + " " + user.LastName;
+                appointment.DiagnosName = applicationDbContext.Diagnoses.Where(x => x.DiagnosisId == appointment.DiagnosisId).First().Name;
                 applicationDbContext.Appointments.Add(appointment);
                 applicationDbContext.SaveChanges();
 

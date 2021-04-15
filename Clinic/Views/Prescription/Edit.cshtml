@@ -22,8 +22,7 @@
 
     <div class="form-group">
         <label asp-for="PatientName">Имя пациента</label>
-        <div><span asp-validation-for="PatientName" class="text-danger"></span></div>
-        <input asp-for="PatientName" class="form-control" />
+        @Html.DropDownList("users", ViewBag.Users as SelectList, new { @class = "form-control" })
     </div>
 
     <div class="text-center">

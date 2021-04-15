@@ -19,9 +19,9 @@
     {
         <tr>
             <td class="text-right">@item.AppointmentId</td>
-            <td>@item.PatientId</td>
+            <td>@item.PatientFullName</td>
             <td>@item.AppointmentPlaced</td>
-            <td>@item.DiagnosisId</td>
+            <td>@item.DiagnosName</td>
             <td class="text-right">@item.TotalSum.ToString("c")</td>
             <td class="text-center">
                 <form asp-action="Delete" method="post">
