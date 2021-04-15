@@ -20,7 +20,7 @@
             <td class="text-right">@item.ServiceId</td>
             <td>@item.Name</td>
             <td>@item.DoctorName</td>
-            <td class="text-right">@item.Price.ToString("c")</td>
+            <td class="text-right">@item.Price.ToString() BYN</td>
             <td class="text-center">
                 <form asp-action="Delete" method="post">
                     <a asp-action="Edit" class="btn btn-sm btn-warning" asp-route-serviceId="@item.ServiceId">Редактировать</a>
