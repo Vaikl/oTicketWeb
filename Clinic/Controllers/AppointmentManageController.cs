@@ -1,8 +1,14 @@
-﻿using Clinic.Interfaces;
+﻿using Clinic.Database;
+using Clinic.Identity;
+using Clinic.Interfaces;
 using Clinic.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 
@@ -12,11 +18,12 @@ namespace Clinic.Controllers
     {
         private readonly IAppointmentRepository repository;
         private readonly IHttpContextAccessor httpContextAccessor;
-
-        public AppointmentManageController(IAppointmentRepository repo, IHttpContextAccessor accessor)
+        private ApplicationDbContext _applicationDbContext;
+        public AppointmentManageController(IAppointmentRepository repo, IHttpContextAccessor accessor, ApplicationDbContext applicationDbContext)
         {
             repository = repo;
             httpContextAccessor = accessor;
+            _applicationDbContext = applicationDbContext;
         }
 
         [Authorize(Roles = "Admin, Doctor")]
@@ -27,21 +34,29 @@ namespace Clinic.Controllers
             .Where(a => a.PatientId == httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)));
 
         [Authorize(Roles = "Admin, Doctor")]
-        public ViewResult Edit(int appointmentId) => View(repository.Appointments.FirstOrDefault(p => p.AppointmentId == appointmentId));
+        public ViewResult Edit(int appointmentId)
+        {
+            List<Object> digs = new List<Object>();
+
+            foreach (Diagnosis diagnosis in _applicationDbContext.Diagnoses)
+            {
+                digs.Add(new { Id = diagnosis.DiagnosisId ,Name = diagnosis.Name });
+            }
+
+
+            ViewBag.Digs = new SelectList(digs, "Id", "Name");
+            ViewBag.Model = repository.Appointments.FirstOrDefault(p => p.AppointmentId == appointmentId);
+            return View(repository.Appointments.FirstOrDefault(p => p.AppointmentId == appointmentId));
+        }
 
         [Authorize(Roles = "Admin, Doctor")]
         [HttpPost]
         public IActionResult Edit(Appointment appointment)
         {
-            if (ModelState.IsValid)
-            {
-                repository.SaveAppointment(appointment);
+            appointment.DiagnosisId = Int32.Parse(Request.Form["Digs"].ToString());
+            repository.SaveAppointment(appointment);
                 return RedirectToAction("Index");
-            }
-            else
-            {
-                return View(appointment);
-            }
+          
         }
 
         [Authorize(Roles = "Admin, Doctor")]
