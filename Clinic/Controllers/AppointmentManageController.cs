@@ -44,7 +44,7 @@ namespace Clinic.Controllers
             }
 
 
-            ViewBag.Digs = new SelectList(digs, "Id", "Name");
+            ViewBag.Digs = new SelectList(digs, "Id", "Name", repository.Appointments.FirstOrDefault(p => p.AppointmentId == appointmentId).DiagnosisId);
          
             return View(repository.Appointments.FirstOrDefault(p => p.AppointmentId == appointmentId));
         }

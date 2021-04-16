@@ -32,8 +32,9 @@ namespace Clinic.Controllers
         [Authorize(Roles = "Admin, Doctor")]
         public ViewResult Edit(int prescriptionId)
         {
-            createViewBag();
-            return View(repository.Prescriptions.FirstOrDefault(p => p.PrescriptionId == prescriptionId));
+            Prescription prescription = repository.Prescriptions.FirstOrDefault(p => p.PrescriptionId == prescriptionId);
+            createViewBag(prescription.PatientName);
+            return View(prescription);
         }
 
         [Authorize(Roles = "Admin, Doctor")]
@@ -58,11 +59,11 @@ namespace Clinic.Controllers
         [Authorize(Roles = "Admin, Doctor")]
         public ViewResult Create()
         {
-            createViewBag();
+            createViewBag(null);
           return View("Edit", new Prescription());
         }
 
-        private void createViewBag()
+        private void createViewBag(string name)
         {
             List<Object> users = new List<Object>();
            
@@ -72,7 +73,7 @@ namespace Clinic.Controllers
             }
 
            
-            ViewBag.Users = new SelectList(users, "UserName", "UserName");
+            ViewBag.Users = new SelectList(users, "UserName", "UserName", name);
         }
 
         [Authorize(Roles = "Admin, Doctor")]

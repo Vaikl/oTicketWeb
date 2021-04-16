@@ -28,7 +28,7 @@ namespace Clinic.Controllers
 
         [Authorize(Roles = "Admin, Doctor")]
         public ViewResult Edit(int diagnosisId) {
-            createViewBagCategory();
+            createViewBagCategory(repository.Diagnoses.FirstOrDefault(p => p.DiagnosisId == diagnosisId).Category);
             return View(repository.Diagnoses.FirstOrDefault(p => p.DiagnosisId == diagnosisId)); }
 
         [Authorize(Roles = "Admin, Doctor")]
@@ -51,7 +51,7 @@ namespace Clinic.Controllers
 
         [Authorize(Roles = "Admin, Doctor")]
         public ViewResult Create() {
-            createViewBagCategory();
+            createViewBagCategory(null);
             return View("Edit", new Diagnosis()); 
         }
 
@@ -70,17 +70,17 @@ namespace Clinic.Controllers
         }
 
 
-        private void createViewBagCategory()
+        private void createViewBagCategory(string category)
         {
             List<Object> categorys = new List<Object>();
-
             foreach (Category us in _applicationDbContext.Categories)
             {
+               
                 categorys.Add(new { Name = us.Name });
             }
 
 
-            ViewBag.Categorys = new SelectList(categorys, "Name", "Name");
+            ViewBag.Categorys = new SelectList(categorys, "Name", "Name", category);
         }
     }
 }

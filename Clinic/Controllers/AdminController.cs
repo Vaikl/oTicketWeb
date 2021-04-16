@@ -50,6 +50,7 @@ namespace Clinic.Controllers
         [Authorize(Roles = "Admin, Doctor")]
         public ViewResult Edit(int serviceId)
         {
+            Service service = repository.Services.FirstOrDefault(p => p.ServiceId == serviceId);
             List<Object> doctors = new List<Object>();
             List<Object> categorys = new List<Object>();
             foreach (ApplicationUser us in _userManager.Users)
@@ -65,9 +66,9 @@ namespace Clinic.Controllers
             {
                 categorys.Add(new { Id = ca.CategoryId, Name = ca.Name });
             }
-            ViewBag.Categorys = new SelectList(categorys, "Id", "Name");
-            ViewBag.Doctors = new SelectList(doctors, "Id", "UserName");
-            return View(repository.Services.FirstOrDefault(p => p.ServiceId == serviceId));
+            ViewBag.Categorys = new SelectList(categorys, "Id", "Name", service.CategoryId );
+            ViewBag.Doctors = new SelectList(doctors, "Id", "UserName", service.DoctorId);
+            return View(service);
         }
 
         [Authorize(Roles = "Admin, Doctor")]
