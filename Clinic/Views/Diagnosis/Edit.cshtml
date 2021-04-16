@@ -22,8 +22,7 @@
 
     <div class="form-group">
         <label asp-for="Category">Категория</label>
-        <div><span asp-validation-for="Category" class="text-danger"></span></div>
-        <input asp-for="Category" class="form-control" />
+        @Html.DropDownList("category", ViewBag.Categorys as SelectList, new { @class = "form-control" })
     </div>
 
     <div class="text-center">
