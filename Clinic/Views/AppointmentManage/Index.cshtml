@@ -21,7 +21,7 @@
         foreach (var item in Model)
         {
         <tr>
-            <td class="text-right">@i</td>
+                <td class="text-right">@i</td>
             <td>@item.PatientFullName</td>
             <td>@item.AppointmentPlaced</td>
             <td>@item.DiagnosName</td>
@@ -30,7 +30,8 @@
                 <form asp-action="Delete" method="post">
                     <a asp-action="Edit" class="btn btn-sm btn-warning" asp-route-appointmentId="@item.AppointmentId">Редактировать</a>
                     <input type="hidden" name="AppointmentId" value="@item.AppointmentId" />
-                </form>
+                    <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                </form>        
             </td>
         </tr>
             i++;

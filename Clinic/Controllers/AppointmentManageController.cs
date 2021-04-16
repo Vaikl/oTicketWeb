@@ -45,7 +45,7 @@ namespace Clinic.Controllers
 
 
             ViewBag.Digs = new SelectList(digs, "Id", "Name");
-            ViewBag.Model = repository.Appointments.FirstOrDefault(p => p.AppointmentId == appointmentId);
+         
             return View(repository.Appointments.FirstOrDefault(p => p.AppointmentId == appointmentId));
         }
 
@@ -53,13 +53,23 @@ namespace Clinic.Controllers
         [HttpPost]
         public IActionResult Edit(Appointment appointment)
         {
+            appointment = _applicationDbContext.Appointments.FirstOrDefault(x => x.AppointmentId == appointment.AppointmentId);
             appointment.DiagnosisId = Int32.Parse(Request.Form["Digs"].ToString());
+            appointment.DiagnosName = _applicationDbContext.Diagnoses.FirstOrDefault(x => x.DiagnosisId == appointment.DiagnosisId).Name;
             repository.SaveAppointment(appointment);
                 return RedirectToAction("Index");
           
         }
 
+      
+
         [Authorize(Roles = "Admin, Doctor")]
-        public ViewResult Create() => View("Edit", new Appointment());
+        [HttpPost]
+        public IActionResult Delete(int appointmentId)
+        {
+            Appointment deletedAppoint = repository.DeleteAppointment(appointmentId);
+          
+            return RedirectToAction("Index");
+        }
     }
 }

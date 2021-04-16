@@ -8,7 +8,7 @@ namespace Clinic.Models
 {
     public class Appointment
     {
-        [BindNever]
+        
         public int AppointmentId { get; set; }
 
         public List<AppointmentLine> AppointmentLines { get; set; }

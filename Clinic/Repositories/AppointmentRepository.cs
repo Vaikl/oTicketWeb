@@ -78,21 +78,28 @@ namespace Clinic.Repositories
 
         public void SaveAppointment(Appointment appointment)
         {
-            if (appointment != null && appointment.AppointmentId == 0)
-            {
-                applicationDbContext.Appointments.Add(appointment);
-            }
-            else
-            {
                 Appointment dbEntry = applicationDbContext.Appointments.FirstOrDefault(d => d.AppointmentId == appointment.AppointmentId);
 
                 if (appointment != null && dbEntry != null)
                 {
                     dbEntry.Diagnosis = appointment.Diagnosis;
                 }
+         
+            applicationDbContext.SaveChanges();
+        }
+
+        public Appointment DeleteAppointment(int appointmentId)
+        {
+            Appointment dbEntry = applicationDbContext.Appointments.FirstOrDefault(d => d.AppointmentId == appointmentId);
+
+         
+            if (dbEntry != null)
+            {
+                applicationDbContext.Appointments.Remove(dbEntry);
+                applicationDbContext.SaveChanges();
             }
 
-            applicationDbContext.SaveChanges();
+            return dbEntry;
         }
     }
 }

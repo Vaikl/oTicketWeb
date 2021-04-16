@@ -12,5 +12,7 @@ namespace Clinic.Interfaces
         IEnumerable<Appointment> GetAllAppointments();
 
         void SaveAppointment(Appointment appointment);
+
+        Appointment DeleteAppointment(int appointment);
     }
 }
