@@ -27,7 +27,11 @@ namespace Clinic.Controllers
         }
 
         [Authorize(Roles = "Admin, Doctor")]
-        public ViewResult Index() => View(repository.Appointments);
+        public ViewResult Index(string name)
+        {
+            if (name != null) return View(repository.Appointments.Where(x => x.PatientFullName.Contains(name)));
+          return View(repository.Appointments);
+        }
 
         [Authorize(Roles = "Patient")]
         public ViewResult MyAppointments() => View(repository.Appointments

@@ -27,9 +27,6 @@ namespace Clinic.Controllers
         }
 
         [Authorize(Roles = "Admin, Doctor")]
-        public ViewResult Index() => View(repository.Prescriptions);
-
-        [Authorize(Roles = "Admin, Doctor")]
         public ViewResult Edit(int prescriptionId)
         {
             Prescription prescription = repository.Prescriptions.FirstOrDefault(p => p.PrescriptionId == prescriptionId);
@@ -61,6 +58,14 @@ namespace Clinic.Controllers
         {
             createViewBag(null);
           return View("Edit", new Prescription());
+        }
+
+        [Authorize(Roles = "Admin, Doctor")]
+        public ActionResult Index(string name)
+        {
+            if (name == null) return View(repository.Prescriptions);
+            else
+            return View(repository.Prescriptions.Where(x => x.PatientName.Contains(name)));
         }
 
         private void createViewBag(string name)

@@ -4,7 +4,15 @@
     ViewBag.Title = "Все заявки";
     Layout = "_Layout";
 }
-
+<h3>Поиск заявок</h3>
+<br>
+<form method="get">
+    <div class="form-inline form-group">
+        <label class="control-label">Имя пациента: </label>
+        <input name="name" class="form-control" />
+        <input type="submit" value="Фильтр" class="btn btn-default" />
+    </div>
+</form>
 <h3>Редактирование заявок на сайте</h3>
 <table class="table table-striped table-bordered table-sm">
     <tr>
@@ -15,26 +23,26 @@
         <th class="text-right">Цена</th>
         <th class="text-center">Действия</th>
     </tr>
-    
+
     @{
         int i = 1;
         foreach (var item in Model)
         {
-        <tr>
+            <tr>
                 <td class="text-right">@i</td>
-            <td>@item.PatientFullName</td>
-            <td>@item.AppointmentPlaced</td>
-            <td>@item.DiagnosName</td>
-            <td class="text-right">@item.TotalSum.ToString("c")</td>
-            <td class="text-center">
-                <form asp-action="Delete" method="post">
-                    <a asp-action="Edit" class="btn btn-sm btn-warning" asp-route-appointmentId="@item.AppointmentId">Редактировать</a>
-                    <input type="hidden" name="AppointmentId" value="@item.AppointmentId" />
-                    <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
-                </form>        
-            </td>
-        </tr>
+                <td>@item.PatientFullName</td>
+                <td>@item.AppointmentPlaced</td>
+                <td>@item.DiagnosName</td>
+                <td class="text-right">@item.TotalSum.ToString("c")</td>
+                <td class="text-center">
+                    <form asp-action="Delete" method="post">
+                        <a asp-action="Edit" class="btn btn-sm btn-warning" asp-route-appointmentId="@item.AppointmentId">Редактировать</a>
+                        <input type="hidden" name="AppointmentId" value="@item.AppointmentId" />
+                        <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                    </form>
+                </td>
+            </tr>
             i++;
         }
-        }
+    }
 </table>
