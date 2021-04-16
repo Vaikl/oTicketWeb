@@ -24,24 +24,17 @@ namespace Clinic.Controllers
             IEnumerable<Service> services;
             string currentCategory = string.Empty;
 
-            if (string.IsNullOrEmpty(category))
+             if (string.IsNullOrEmpty(category))
             {
-                services = _serviceRepository.Services.OrderBy(p => p.ServiceId);
+                List<Category> categories = _categoryRepository.Categories.ToList();
+                services = _serviceRepository.Services.Where(p => p.Category != null).OrderBy(p => p.Name);
                 currentCategory = "All services";
             }
             else
             {
-                if (string.Equals("Прием у врача", _category))
-                {
-                    services = _serviceRepository.Services.Where(p => p.CategoryId == 1).OrderBy(p => p.Name);
-                }
-                else
-                {
-                    int categoryId = _categoryRepository.Categories.Where(x => x.Name.Equals(category)).First().CategoryId;
+                  int categoryId = _categoryRepository.Categories.Where(x => x.Name.Equals(category)).First().CategoryId;
                     services = _serviceRepository.Services.Where(p => p.CategoryId == categoryId).OrderBy(p => p.Name);
-                }
-
-                currentCategory = _category;
+                    currentCategory = _category;
             }
 
             return View(new ServicesListViewModel
