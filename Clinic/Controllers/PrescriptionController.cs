@@ -1,4 +1,5 @@
-﻿using Clinic.Identity;
+﻿using Clinic.Database;
+using Clinic.Identity;
 using Clinic.Interfaces;
 using Clinic.Models;
 using log4net;
@@ -17,10 +18,12 @@ namespace Clinic.Controllers
         private IPrescriptionRepository repository;
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private UserManager<ApplicationUser> _userManager;
-        public PrescriptionController(IPrescriptionRepository repo, UserManager<ApplicationUser> userManager)
+        private ApplicationDbContext _applicationDbContext;
+        public PrescriptionController(IPrescriptionRepository repo, UserManager<ApplicationUser> userManager, ApplicationDbContext applicationDbContext)
         {
             repository = repo;
             _userManager = userManager;
+            _applicationDbContext = applicationDbContext;
         }
 
         [Authorize(Roles = "Admin, Doctor")]
@@ -71,5 +74,16 @@ namespace Clinic.Controllers
            
             ViewBag.Users = new SelectList(users, "UserName", "UserName");
         }
+
+        [Authorize(Roles = "Admin, Doctor")]
+        [HttpPost]
+        public IActionResult Delete(int prescriptionId)
+        {
+            Prescription persc = _applicationDbContext.Prescriptions.FirstOrDefault(x => x.PrescriptionId == prescriptionId);
+            if (persc != null) _applicationDbContext.Prescriptions.Remove(persc);
+            _applicationDbContext.SaveChanges();
+            return RedirectToAction("Index");
+        }
     }
+
 }
