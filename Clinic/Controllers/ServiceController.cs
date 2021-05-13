@@ -52,11 +52,13 @@ namespace Clinic.Controllers
 
             if (string.IsNullOrEmpty(_searchString))
             {
-                services = _serviceRepository.Services.OrderBy(p => p.ServiceId);
+                List<Category> categories = _categoryRepository.Categories.ToList();
+                services = _serviceRepository.Services.Where(p => p.Category != null).OrderBy(p => p.Name);
             }
             else
             {
-                services = _serviceRepository.Services.Where(p => p.Name.ToLower().Contains(_searchString.ToLower()));
+                List<Category> categories = _categoryRepository.Categories.ToList();
+                services = _serviceRepository.Services.Where(p => p.Category != null).OrderBy(p => p.Name).Where(p => p.Name.ToLower().Contains(_searchString.ToLower()));
             }
 
             return View("~/Views/Service/List.cshtml", new ServicesListViewModel { Services = services, CurrentCategory = "All" });
