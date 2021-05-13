@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Clinic.Controllers
 {
@@ -74,7 +75,11 @@ namespace Clinic.Controllers
            
             foreach (ApplicationUser us in _userManager.Users)
             {
-                users.Add(new {  UserName = us.FirstName + " " + us.LastName });
+                List<string> roles = (List<string>)Task.Run(() => _userManager.GetRolesAsync(us)).Result;
+                if (roles.Contains("Patient"))
+                {
+                    users.Add(new { UserName = us.FirstName + " " + us.LastName });
+                }
             }
 
            
