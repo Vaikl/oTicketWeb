@@ -45,6 +45,7 @@ namespace Clinic.Controllers
             }
             else
             {
+                createViewBagCategory(diagnosis.Category);
                 return View(diagnosis);
             }
         }

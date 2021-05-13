@@ -3,6 +3,7 @@ using Clinic.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,23 +31,28 @@ namespace Clinic.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(string name)
         {
-            if (!string.IsNullOrEmpty(name))
-            {
-                IdentityResult result = await _roleManager.CreateAsync(new IdentityRole(name));
+           
+                if (!string.IsNullOrEmpty(name))
+                {
+                    IdentityResult result = await _roleManager.CreateAsync(new IdentityRole(name));
 
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    foreach (var error in result.Errors)
+                    if (result.Succeeded)
                     {
-                        ModelState.AddModelError(string.Empty, error.Description);
+                        return RedirectToAction("Index");
                     }
-                }
-            }
+                    else
+                    {
+                       
+                        ModelState.AddModelError(string.Empty, "Такая роль уже существует");
+                         name = null;
+                    }
 
+                }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Введите название роли");
+            }
+            
             return View(name);
         }
 

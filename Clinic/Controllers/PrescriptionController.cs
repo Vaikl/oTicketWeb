@@ -50,6 +50,7 @@ namespace Clinic.Controllers
             }
             else
             {
+                createViewBag(prescription.PatientName);
                 return View(prescription);
             }
         }

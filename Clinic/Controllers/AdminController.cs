@@ -110,7 +110,24 @@ namespace Clinic.Controllers
                 return RedirectToAction("Index");
             }
             else
-            {      
+            {
+                List<Object> doctors = new List<Object>();
+                List<Object> categorys = new List<Object>();
+                foreach (ApplicationUser us in _userManager.Users)
+                {
+                    List<string> roless = (List<string>)Task.Run(() => _userManager.GetRolesAsync(us)).Result;
+                    if (roless.Contains("Doctor"))
+                    {
+                        doctors.Add(new { Id = us.Id, UserName = us.FirstName + " " + us.LastName });
+                    }
+                }
+
+                foreach (Category ca in _applicationDbContext.Categories)
+                {
+                    categorys.Add(new { Id = ca.CategoryId, Name = ca.Name });
+                }
+                ViewBag.Categorys = new SelectList(categorys, "Id", "Name", service.CategoryId);
+                ViewBag.Doctors = new SelectList(doctors, "Id", "UserName", service.DoctorId);
                 return View(service);
             }
         }
