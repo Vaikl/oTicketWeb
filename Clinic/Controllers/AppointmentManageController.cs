@@ -75,5 +75,24 @@ namespace Clinic.Controllers
           
             return RedirectToAction("Index");
         }
+
+
+        [Authorize(Roles = "Admin, Doctor")]
+        public IActionResult Done(int appointmentId)
+        {
+            Appointment deletedAppoint = repository.DeleteAppointment(appointmentId);
+            _applicationDbContext.AppointmentsDone.Add(new AppointmentDone()
+            {
+                AppointmentPlaced = deletedAppoint.AppointmentPlaced,
+                DiagnosisId = deletedAppoint.DiagnosisId,
+                DiagnosName = deletedAppoint.DiagnosName,
+                DoctorId = deletedAppoint.DoctorId,
+                PatientFullName = deletedAppoint.PatientFullName,
+                PatientId = deletedAppoint.PatientId,
+                TotalSum = deletedAppoint.TotalSum
+            });
+            _applicationDbContext.SaveChanges();
+            return RedirectToAction("Index");
+        }
     }
 }

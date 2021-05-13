@@ -10,6 +10,7 @@ namespace Clinic.Database
         }
 
         public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<AppointmentDone> AppointmentsDone { get; set; }
         public DbSet<Diagnosis> Diagnoses { get; set; }
         public DbSet<Prescription> Prescriptions { get; set; }
         public DbSet<Service> Services { get; set; }

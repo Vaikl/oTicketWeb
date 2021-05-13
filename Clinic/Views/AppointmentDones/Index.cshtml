@@ -1,0 +1,72 @@
+﻿@model IEnumerable<Clinic.Models.AppointmentDone>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.PatientId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PatientFullName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DoctorId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DiagnosisId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DiagnosName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalSum)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AppointmentPlaced)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.PatientId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PatientFullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DoctorId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DiagnosisId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DiagnosName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalSum)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AppointmentPlaced)
+            </td>
+           
+        </tr>
+}
+    </tbody>
+</table>
+</body>
+</html>
