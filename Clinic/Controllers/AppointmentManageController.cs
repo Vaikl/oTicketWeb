@@ -83,7 +83,7 @@ namespace Clinic.Controllers
             Appointment deletedAppoint = repository.DeleteAppointment(appointmentId);
             _applicationDbContext.AppointmentsDone.Add(new AppointmentDone()
             {
-                AppointmentPlaced = deletedAppoint.AppointmentPlaced,
+                AppointmentPlaced = DateTime.Now,
                 DiagnosisId = deletedAppoint.DiagnosisId,
                 DiagnosName = deletedAppoint.DiagnosName,
                 DoctorId = deletedAppoint.DoctorId,
