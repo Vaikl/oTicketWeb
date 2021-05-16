@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Clinic.Controllers
@@ -45,6 +46,8 @@ namespace Clinic.Controllers
             }
             else
             {
+                StringBuilder message = new StringBuilder();
+                message.AppendLine("Ваш заказ: ");
                 foreach (ShoppingCartItem shoppingCart in _shoppingCart.ShoppingCartItems) 
                 {
                     repository.CreateAppointment(new Appointment()
@@ -52,9 +55,11 @@ namespace Clinic.Controllers
                         DoctorId = shoppingCart.Service.DoctorId,
                        
                     }) ;
+                    message.AppendLine(shoppingCart.Service.Name+" Врач: "+shoppingCart.Service.DoctorName+ " К оплате: "+ shoppingCart.Service.Price);
                 }
+                message.AppendLine("Спасибо за заказ");
                 _shoppingCart.ClearCart();
-               SendMessage("Спасибо за заказ"); 
+                 SendMessage(message.ToString()); 
                 return RedirectToAction("CheckoutComplete");
             }
          
