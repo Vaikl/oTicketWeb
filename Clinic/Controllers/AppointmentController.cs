@@ -54,7 +54,7 @@ namespace Clinic.Controllers
                     }) ;
                 }
                 _shoppingCart.ClearCart();
-                new Task(delegate { SendMessage("Спасибо за заказ"); }).RunSynchronously();
+               SendMessage("Спасибо за заказ"); 
                 return RedirectToAction("CheckoutComplete");
             }
          
@@ -70,13 +70,13 @@ namespace Clinic.Controllers
         }
 
 
-        public async Task<IActionResult> SendMessage(string text)
+        public void SendMessage(string text)
         {  
             string idUser = this.User.Claims.Where(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Select(c => c.Value).SingleOrDefault();
             ApplicationUser applicationUser = _userManager.Users.Where(x => x.Id == idUser).FirstOrDefault();
             EmailService emailService = new EmailService();
-            await emailService.SendEmailAsync(applicationUser.Email, "Заказ на oTicket", text);
-            return RedirectToAction("Index");
+             emailService.SendEmailAsync(applicationUser.Email, "Заказ на oTicket", text);
+           
             
         }
     }

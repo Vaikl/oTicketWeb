@@ -6,25 +6,25 @@ namespace Clinic
 {
     public class EmailService
     {
-        public async Task SendEmailAsync(string email, string subject, string message)
+        public  void SendEmailAsync(string email, string subject, string message)
         {
             var emailMessage = new MimeMessage();
 
-            emailMessage.From.Add(new MailboxAddress("Администрация сайта", "login@yandex.ru"));
+            emailMessage.From.Add(new MailboxAddress("Администрация сайта", "Vaikl2017@yandex.ru"));
             emailMessage.To.Add(new MailboxAddress("", email));
             emailMessage.Subject = subject;
-            emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+            emailMessage.Body = new TextPart()
             {
                 Text = message
             };
 
             using (var client = new SmtpClient())
             {
-                await client.ConnectAsync("smtp.yandex.ru", 465, true);
-                await client.AuthenticateAsync("Vaikl2017@yandex.ru", "diplom1234");
-                await client.SendAsync(emailMessage);
+                 client.Connect("smtp.yandex.ru", 465, true);
+                 client.Authenticate("Vaikl2017@yandex.ru", "diplom1234");
+                client.Send(emailMessage);
 
-                await client.DisconnectAsync(true);
+                 client.Disconnect(true);
             }
         }
     }
