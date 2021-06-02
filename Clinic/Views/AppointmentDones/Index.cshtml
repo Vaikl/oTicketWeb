@@ -8,9 +8,7 @@
 <table class="table table-striped table-bordered table-sm">
     <thead>
         <tr>
-            <th>
-                ID Пациента
-            </th>
+           
             <th>
                 Имя пациента
             </th>
@@ -32,9 +30,7 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PatientId)
-                </td>
+              
                 <td>
                     @Html.DisplayFor(modelItem => item.PatientFullName)
                 </td>

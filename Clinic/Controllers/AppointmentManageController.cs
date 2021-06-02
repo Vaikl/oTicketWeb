@@ -19,11 +19,13 @@ namespace Clinic.Controllers
         private readonly IAppointmentRepository repository;
         private readonly IHttpContextAccessor httpContextAccessor;
         private ApplicationDbContext _applicationDbContext;
-        public AppointmentManageController(IAppointmentRepository repo, IHttpContextAccessor accessor, ApplicationDbContext applicationDbContext)
+        private UserManager<ApplicationUser> _userManager;
+        public AppointmentManageController(IAppointmentRepository repo, IHttpContextAccessor accessor, ApplicationDbContext applicationDbContext, UserManager<ApplicationUser> userManager)
         {
             repository = repo;
             httpContextAccessor = accessor;
             _applicationDbContext = applicationDbContext;
+            _userManager = userManager;
         }
 
         [Authorize(Roles = "Admin, Doctor")]
@@ -81,12 +83,15 @@ namespace Clinic.Controllers
         public IActionResult Done(int appointmentId)
         {
             Appointment deletedAppoint = repository.DeleteAppointment(appointmentId);
+            ClaimsPrincipal user = this.User;
+            string idDoctor = user.Claims.Where(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Select(c => c.Value).SingleOrDefault();
+            ApplicationUser applicationUser = _userManager.Users.Where(x => x.Id == idDoctor).FirstOrDefault();
             _applicationDbContext.AppointmentsDone.Add(new AppointmentDone()
             {
                 AppointmentPlaced = DateTime.Now,
                 DiagnosisId = deletedAppoint.DiagnosisId,
                 DiagnosName = deletedAppoint.DiagnosName,
-                DoctorId = deletedAppoint.DoctorId,
+                DoctorId = applicationUser.FirstName + " " + applicationUser.LastName,
                 PatientFullName = deletedAppoint.PatientFullName,
                 PatientId = deletedAppoint.PatientId,
                 TotalSum = deletedAppoint.TotalSum
