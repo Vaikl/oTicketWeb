@@ -25,7 +25,7 @@
             <td>@item.Category</td>
             <td class="text-center">
                 <form asp-action="Delete" method="post">
-                    <a asp-action="Edit" class="btn btn-sm btn-warning" asp-route-diagnosisId="@item.DiagnosisId">Редактировать</a>
+                    <a asp-action="Edit" class="btn btn-sm btn-primary" asp-route-diagnosisId="@item.DiagnosisId">Редактировать</a>
                     <input type="hidden" name="DiagnosisId" value="@item.DiagnosisId" />
                     <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
                 </form>

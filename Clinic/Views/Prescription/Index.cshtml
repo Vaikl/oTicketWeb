@@ -34,7 +34,7 @@
             <td>@item.PatientName</td>
             <td class="text-center">
                 <form asp-action="Delete" method="post">
-                    <a asp-action="Edit" class="btn btn-sm btn-warning" asp-route-prescriptionId="@item.PrescriptionId">Редактировать</a>
+                    <a asp-action="Edit" class="btn btn-sm btn-primary" asp-route-prescriptionId="@item.PrescriptionId">Редактировать</a>
                     <input type="hidden" name="PrescriptionId" value="@item.PrescriptionId" />
                     <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
                 </form>

@@ -37,7 +37,7 @@
                 <td class="text-center">
                     <form asp-action="Delete" method="post">
                         <a asp-action="Done" class="btn btn-success" asp-route-appointmentId="@item.AppointmentId">Готово</a>
-                        <a asp-action="Edit" class="btn btn-sm btn-warning" asp-route-appointmentId="@item.AppointmentId">Редактировать</a>
+                        <a asp-action="Edit" class="btn btn-sm btn-primary" asp-route-appointmentId="@item.AppointmentId">Редактировать</a>
                         <input type="hidden" name="AppointmentId" value="@item.AppointmentId" />
                         <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
                     </form>
